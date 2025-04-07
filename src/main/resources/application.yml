@@ -3,13 +3,30 @@ server:
 
 spring:
   application:
-    name: dw-chat
+    name: dw-chat-app
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: your_mysql_url
+    username: your_mysql_username
+    password: your_mysql_password
+    druid:
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
+      max-wait: 60000
+      min-evictable-idle-time-millis: 300000
+      time-between-eviction-runs-millis: 60000
+      pool-prepared-statements: true
   ai:
     dashscope:
-      api-key:
+      api-key: your_api_key
       chat:
         options:
           model: 'qwen-max'
+
+# mybatis-plus
+mybatis-plus:
+  mapperLocations: classpath:mapper/*.xml
 
 
 # log等级
@@ -17,5 +34,6 @@ logging:
   config: classpath:logback/logback-spring.xml
   level:
     org.springframework.ai.chat.client.advisor: debug
+    com.dw.chat.dao: debug
 
 
