@@ -1,0 +1,21 @@
+server:
+  port: 7050
+
+spring:
+  application:
+    name: dw-chat
+  ai:
+    dashscope:
+      api-key:
+      chat:
+        options:
+          model: 'qwen-max'
+
+
+# log等级
+logging:
+  config: classpath:logback/logback-spring.xml
+  level:
+    org.springframework.ai.chat.client.advisor: debug
+
+
