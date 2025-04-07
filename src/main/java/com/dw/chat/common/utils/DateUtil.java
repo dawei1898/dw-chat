@@ -10,8 +10,11 @@ import java.time.format.DateTimeFormatter;
  */
 public class DateUtil {
 
+
+    public static final String FORMAT_DATE_SECOND = "yyyy-MM-dd HH:mm:ss";
+
     public static String getCurrentDateTime() {
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern(FORMAT_DATE_SECOND));
     }
 
 }

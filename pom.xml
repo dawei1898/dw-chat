@@ -10,10 +10,10 @@
         <relativePath/>
     </parent>
 
+    <description>Dw Chat</description>
     <groupId>com.dw.chat</groupId>
     <artifactId>dw-chat</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>dw-chat</name>
+    <version>1.0.0</version>
 
     <properties>
         <java.version>21</java.version>
