@@ -3,7 +3,6 @@ package com.dw.chat.service.impl;
 import com.alibaba.fastjson2.JSON;
 import com.dw.chat.common.constant.ChatConstant;
 import com.dw.chat.common.utils.DateUtil;
-import com.dw.chat.service.ChatService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.ai.chat.client.ChatClient;
@@ -19,14 +18,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 聊天服务
+ * 测试聊天服务
  *
  * @author dawei
  */
 
 @Slf4j
 @Service
-public class ChatServiceImpl implements ChatService {
+public class TestChatService {
 
     @Autowired
     private ChatClient chatClient;

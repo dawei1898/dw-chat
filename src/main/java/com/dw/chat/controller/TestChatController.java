@@ -1,6 +1,6 @@
 package com.dw.chat.controller;
 
-import com.dw.chat.service.ChatService;
+import com.dw.chat.service.impl.TestChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,18 +12,18 @@ import reactor.core.publisher.Flux;
 import java.util.Map;
 
 /**
- * 聊天服务
+ * 测试聊天服务
  *
  * @author dawei
  */
 
 @RestController
-@RequestMapping("/ai")
-public class ChatController {
+@RequestMapping("/test")
+public class TestChatController {
 
 
     @Autowired
-    private ChatService chatServiceImpl;
+    private TestChatService testChatService;
 
 
     /**
@@ -32,7 +32,7 @@ public class ChatController {
     @GetMapping("/chat")
     public Map<String, String> chat(@RequestParam(value = "message") String message,
                                     @RequestParam(value = "model", required = false) String model) {
-        return chatServiceImpl.chat(message, model);
+        return testChatService.chat(message, model);
     }
 
     /**
@@ -41,7 +41,7 @@ public class ChatController {
     @GetMapping(path = "/chat/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Map<String, String>> chatStream(@RequestParam(value = "message") String message,
                                                 @RequestParam(value = "model", required = false) String model) {
-        return chatServiceImpl.chatStream(message, model);
+        return testChatService.chatStream(message, model);
     }
 
 }
