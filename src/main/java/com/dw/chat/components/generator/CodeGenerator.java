@@ -21,7 +21,7 @@ public class CodeGenerator {
     public static void main(String[] args) {
         String url = "jdbc:mysql://localhost:3306/dwc";
         String username = "root";
-        String password = "*";
+        String password = "123456";
 
         FastAutoGenerator.create(url, username, password)
                 .globalConfig(builder -> builder
