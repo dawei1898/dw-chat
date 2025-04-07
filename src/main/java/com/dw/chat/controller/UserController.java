@@ -2,15 +2,15 @@ package com.dw.chat.controller;
 
 import com.dw.chat.common.constant.ResultMsg;
 import com.dw.chat.common.entity.Response;
+import com.dw.chat.common.utils.UserContextHolder;
+import com.dw.chat.components.auth.Auth;
 import com.dw.chat.model.param.LoginParam;
 import com.dw.chat.model.param.RegisterParam;
+import com.dw.chat.model.vo.UserVo;
 import com.dw.chat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 用户服务
@@ -41,6 +41,27 @@ public class UserController {
     public Response<String> login(@RequestBody @Validated LoginParam param){
         String token = userServiceImpl.login(param);
         return Response.success(ResultMsg.SUCCESS, token);
+    }
+
+    /**
+     * 退出登录
+     */
+    @Auth
+    @DeleteMapping("/logout")
+    public Response<Void> logout(){
+        userServiceImpl.logout();
+        return Response.success();
+    }
+
+    /**
+     * 查询用户信息
+     */
+    @Auth
+    @GetMapping("/queryUser")
+    public Response<UserVo> queryUser(){
+        Long userId = UserContextHolder.getUserId();
+        UserVo userVo = userServiceImpl.queryUser(userId);
+        return Response.success(userVo);
     }
 
 }

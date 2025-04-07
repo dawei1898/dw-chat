@@ -4,6 +4,7 @@ import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dw.chat.common.exception.BizException;
 import com.dw.chat.common.utils.RequestHolder;
+import com.dw.chat.common.utils.UserContextHolder;
 import com.dw.chat.components.auth.AuthConstant;
 import com.dw.chat.components.auth.AuthUtil;
 import com.dw.chat.components.auth.LoginUser;
@@ -11,9 +12,11 @@ import com.dw.chat.dao.UserMapper;
 import com.dw.chat.model.entity.DwcUser;
 import com.dw.chat.model.param.LoginParam;
 import com.dw.chat.model.param.RegisterParam;
+import com.dw.chat.model.vo.UserVo;
 import com.dw.chat.service.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -94,5 +97,33 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
+    /**
+     * 退出登录
+     */
+    @Override
+    public void logout() {
+        LoginUser loginUser = UserContextHolder.getUser();
+        if (loginUser != null) {
+            String tokenId = loginUser.getTokenId();
+            AuthUtil.removeToken(tokenId);
+        }
+    }
+
+    /**
+     * 查询一个用户
+     */
+    @Override
+    public UserVo queryUser(Long userId) {
+        if (userId == null) {
+            return null;
+        }
+        DwcUser dwcUser = userMapper.selectById(userId);
+        if (dwcUser == null) {
+            throw new BizException("用户不存在!");
+        }
+        UserVo userVo = new UserVo();
+        BeanUtils.copyProperties(dwcUser, userVo);
+        return userVo;
+    }
 
 }

@@ -2,6 +2,7 @@ package com.dw.chat.service;
 
 import com.dw.chat.model.param.LoginParam;
 import com.dw.chat.model.param.RegisterParam;
+import com.dw.chat.model.vo.UserVo;
 
 /**
  * 用户服务
@@ -20,5 +21,14 @@ public interface UserService {
      */
     String login(LoginParam param);
 
+    /**
+     * 退出登录
+     */
+    void logout();
+
+    /**
+     * 查询用户信息
+     */
+    UserVo queryUser(Long userId);
 
 }
