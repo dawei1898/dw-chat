@@ -1,7 +1,9 @@
 package com.dw.chat.config;
 
+import com.dw.chat.common.utils.SpringContextHolder;
 import lombok.Data;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 /**
  * 项目配置类
@@ -11,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-//@Import({GlobalExceptionHandler.class, SpringContextHolder.class})
+@Import({SpringContextHolder.class})
 public class DwChatAppConfig {
 
 }

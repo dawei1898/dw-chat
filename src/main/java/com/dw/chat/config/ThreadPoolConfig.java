@@ -1,7 +1,9 @@
 package com.dw.chat.config;
 
+import com.alibaba.ttl.TtlRunnable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -29,6 +31,14 @@ public class ThreadPoolConfig {
         // 虚拟线程池
         executor.setThreadFactory(Thread.ofVirtual().name("dwc-task-", 1).factory());
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        // 日志追踪装饰
+        executor.setTaskDecorator(new TaskDecorator() {
+            @Override
+            public Runnable decorate(Runnable runnable) {
+                // 父子线程支持传递 ThreadLocal
+                return TtlRunnable.get(runnable);
+            }
+        });
         return executor;
     }
 

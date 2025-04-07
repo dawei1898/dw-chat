@@ -1,6 +1,8 @@
 package com.dw.chat.controller;
 
+import com.dw.chat.common.constant.ResultMsg;
 import com.dw.chat.common.entity.Response;
+import com.dw.chat.model.param.LoginParam;
 import com.dw.chat.model.param.RegisterParam;
 import com.dw.chat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,15 @@ public class UserController {
     public Response<Void> register(@RequestBody @Validated RegisterParam param){
         userServiceImpl.register(param);
         return Response.success();
+    }
+
+    /**
+     * 用户登录
+     */
+    @PostMapping("/login")
+    public Response<String> login(@RequestBody @Validated LoginParam param){
+        String token = userServiceImpl.login(param);
+        return Response.success(ResultMsg.SUCCESS, token);
     }
 
 }

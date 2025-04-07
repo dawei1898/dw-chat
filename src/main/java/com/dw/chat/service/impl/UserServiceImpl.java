@@ -1,12 +1,19 @@
 package com.dw.chat.service.impl;
 
+import cn.hutool.core.util.IdUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dw.chat.common.exception.BizException;
+import com.dw.chat.common.utils.RequestHolder;
+import com.dw.chat.components.auth.AuthConstant;
+import com.dw.chat.components.auth.AuthUtil;
+import com.dw.chat.components.auth.LoginUser;
 import com.dw.chat.dao.UserMapper;
 import com.dw.chat.model.entity.DwcUser;
+import com.dw.chat.model.param.LoginParam;
 import com.dw.chat.model.param.RegisterParam;
 import com.dw.chat.service.UserService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +56,42 @@ public class UserServiceImpl implements UserService {
                 .email(param.getEmail())
                 .build();
         userMapper.insert(dwcUser);
+    }
+
+
+    /**
+     * 用户登录
+     */
+    @Override
+    public String login(LoginParam param) {
+        // 查询用户
+        DwcUser dwcUser = new DwcUser();
+        dwcUser.setName(param.getUsername());
+        QueryWrapper<DwcUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.setEntity(dwcUser);
+        DwcUser exist = userMapper.selectOne(queryWrapper);
+        if (exist == null) {
+            throw new BizException("用户不存在!");
+        }
+        if (!StringUtils.equals(param.getPassword(), exist.getPassword())) {
+            throw new BizException("密码不正确!");
+        }
+
+        // 生成登录用户信息
+        LoginUser loginUser = LoginUser.builder()
+                .tokenId(IdUtil.fastSimpleUUID())
+                .userId(exist.getId())
+                .username(exist.getName())
+                .ipaddr(RequestHolder.getHttpServletRequestIpAddress())
+                .loginTime(System.currentTimeMillis())
+                .expireTime(System.currentTimeMillis() + AuthConstant.EXPIRE_TIME)
+                .build();
+
+        // 生成token
+        String token = AuthUtil.buildToken(loginUser);
+
+        // 记录登录log
+        return token;
     }
 
 
