@@ -21,7 +21,10 @@ public class CodeGenerator {
     public static void main(String[] args) {
         String url = "jdbc:mysql://localhost:3306/dwc";
         String username = "root";
-        String password = "123456";
+        String password = "*";
+
+        // 需要配置的表
+        String tableName = "dwc_chat_record";
 
         FastAutoGenerator.create(url, username, password)
                 .globalConfig(builder -> builder
@@ -40,7 +43,7 @@ public class CodeGenerator {
                         .xml("mapper.xml")          // 设置 Mapper XML 文件包名
                 )
                 .strategyConfig(builder -> builder
-                        .addInclude("dwc_user")// 需要配置的表
+                        .addInclude(tableName)// 需要配置的表
                         // 实体类配置
                         .entityBuilder()
                         .enableLombok() // 启用 Lombok

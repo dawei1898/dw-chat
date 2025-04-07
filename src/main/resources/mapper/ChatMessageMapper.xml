@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dw.chat.dao.ChatMessageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.dw.chat.model.entity.DwcChatMessage">
+        <id column="msg_id" property="msgId" />
+        <result column="raw_msg_id" property="rawMsgId" />
+        <result column="chat_id" property="chatId" />
+        <result column="type" property="type" />
+        <result column="role" property="role" />
+        <result column="content_type" property="contentType" />
+        <result column="content" property="content" />
+        <result column="reasoning_content" property="reasoningContent" />
+        <result column="tokens" property="tokens" />
+        <result column="model_group" property="modelGroup" />
+        <result column="model_id" property="modelId" />
+        <result column="create_user" property="createUser" />
+        <result column="create_time" property="createTime" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <resultMap id="ChatMessageVoMap" type="com.dw.chat.model.vo.ChatMessageVo">
+        <id column="msg_id" property="msgId" jdbcType="INTEGER" />
+        <result column="raw_msg_id" property="rawMsgId" jdbcType="VARCHAR" />
+        <result column="chat_id" property="chatId" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="VARCHAR" />
+        <result column="role" property="role" jdbcType="VARCHAR" />
+        <result column="content_type" property="contentType" jdbcType="VARCHAR" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="reasoning_content" property="reasoningContent" jdbcType="VARCHAR" />
+        <result column="tokens" property="tokens" jdbcType="INTEGER" />
+        <result column="model_id" property="modelId" jdbcType="VARCHAR" />
+        <result column="model_group" property="modelGroup" jdbcType="VARCHAR" />
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="deleted" property="deleted" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        msg_id, raw_msg_id, chat_id, type, role, content_type, content, reasoning_content, tokens, model_group, model_id, create_user, create_time, deleted
+    </sql>
+
+
+    <!-- 根据主键查询聊天消息表信息 -->
+    <select id="queryMessageByChatId" parameterType="string" resultMap="ChatMessageVoMap">
+        SELECT
+            <include refid="Base_Column_List" />
+        FROM dwc_chat_message
+        WHERE
+            deleted = 0
+            and chat_id = #{chatId}
+        ORDER BY
+            create_time
+    </select>
+
+    <select id="queryLastMessageByChatId" resultMap="ChatMessageVoMap">
+        SELECT
+            <include refid="Base_Column_List" />
+        FROM dwc_chat_message
+        WHERE
+            deleted = 0
+            and chat_id = #{chatId}
+        ORDER BY
+            create_time desc
+            LIMIT #{limit}
+    </select>
+
+</mapper>
