@@ -19,5 +19,10 @@ public class StreamChatParam {
 
     private String modelId = "";
 
+    /** 开启推理 */
+    private boolean openReasoning;
+
+    /** 开启网络搜索 */
+    private boolean openSearch;
 
 }

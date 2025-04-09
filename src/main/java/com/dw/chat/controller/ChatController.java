@@ -11,22 +11,19 @@ import com.dw.chat.model.vo.ChatMessageVo;
 import com.dw.chat.model.vo.ChatRecordVo;
 import com.dw.chat.model.vo.TempMessage;
 import com.dw.chat.service.ChatService;
-import com.dw.chat.service.impl.TestChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  * 聊天服务
  *
  * @author dawei
  */
-
+//@CrossOrigin
 @RestController
 @RequestMapping("/chat")
 public class ChatController {
@@ -92,7 +89,7 @@ public class ChatController {
      * 发起流式聊天
      */
     @Auth
-    @PostMapping("/streamChat")
+    @PostMapping(path = "/streamChat" , produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<TempMessage> streamChat(@RequestBody StreamChatParam param){
         return chatServiceImpl.streamChat(param);
     }

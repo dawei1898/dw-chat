@@ -7,8 +7,8 @@ package com.dw.chat.common.enums;
  */
 public enum MsgTypeEnum {
 
-    USER("1","用户"),
-    AI("2","机器人");
+    USER("user","用户"),
+    AI("ai","机器人");
 
     private final String code;
 

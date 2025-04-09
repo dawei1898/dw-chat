@@ -21,7 +21,7 @@ public class AuthConstant {
     public static final String LOGIN_USER = "login_user";
 
     /** token失效时间(ms) */
-    public static final long EXPIRE_TIME = 2 * 60 * 60 * 1000;
+    public static final long EXPIRE_TIME = 24 * 60 * 60 * 1000;
 
 
     public static final int AUTH_ORDER = 1;

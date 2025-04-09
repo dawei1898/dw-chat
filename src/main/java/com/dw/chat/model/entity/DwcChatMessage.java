@@ -52,7 +52,6 @@ public class DwcChatMessage implements Serializable {
 
     /**
      * 角色（user-用户，assistant-AI助手）
-
      */
     private String role;
 

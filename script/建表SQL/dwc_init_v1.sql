@@ -39,7 +39,7 @@ CREATE TABLE `dwc_chat_message` (
   `msg_id` bigint(20) NOT NULL COMMENT '消息ID',
   `raw_msg_id` varchar(64) NOT NULL COMMENT '原始消息ID',
   `chat_id` varchar(64) DEFAULT NULL COMMENT '聊天会话ID',
-  `type` varchar(4) NOT NULL COMMENT '消息类型（1-用户提问，2-机器回答）',
+  `type` varchar(4) NOT NULL COMMENT '消息类型（user-用户提问，ai-机器回答）',
   `role` varchar(32) DEFAULT NULL COMMENT '角色（user-用户，assistant-AI助手）\n',
   `content_type` varchar(16) DEFAULT NULL COMMENT '消息内容格式（text-文本，image-图像）',
   `content` text NOT NULL COMMENT '消息内容',
