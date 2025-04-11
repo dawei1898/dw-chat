@@ -17,4 +17,14 @@ public class DateUtil {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern(FORMAT_DATE_SECOND));
     }
 
+    /**
+     * 计算输入的时间与现在的时间差值(S)
+     *
+     * @param startTime 开始时间毫秒值
+     * @return 耗费时间(s)
+     */
+    public static String getUseTime(long startTime) {
+        return ((System.currentTimeMillis() - startTime) * 1.000) / 1000 + "";
+    }
+
 }

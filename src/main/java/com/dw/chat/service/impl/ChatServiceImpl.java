@@ -10,6 +10,7 @@ import com.dw.chat.common.enums.ContentTypeEnum;
 import com.dw.chat.common.enums.ModelEnum;
 import com.dw.chat.common.enums.MsgRoleEnum;
 import com.dw.chat.common.enums.MsgTypeEnum;
+import com.dw.chat.common.utils.AddressUtil;
 import com.dw.chat.common.utils.DateUtil;
 import com.dw.chat.common.utils.UserContextHolder;
 import com.dw.chat.common.utils.ValidateUtil;
@@ -31,9 +32,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +64,7 @@ public class ChatServiceImpl implements ChatService {
 
     private static final ConcurrentHashMap<Long, TempMessage> MESSAGE_CACHE = new ConcurrentHashMap<>();
 
-    /** 对话结束标识 */
-    public static final String FINISH_MSG = "STOP";
 
-    /** 关联上下文数量 */
-    public static final int CONTEXT_COUNT = 1;
 
 
     /**
@@ -164,36 +159,36 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Flux<TempMessage> streamChat(StreamChatParam param) {
-        log.info("streamChat param: {}", JSON.toJSONString(param));
+        log.info("remoteIp:{}, streamChat param:{}",
+                AddressUtil.getRemoteIP(), JSON.toJSONString(param));
         Flux<TempMessage> errorFlux = verityStreamChatParam(param);
         if (errorFlux != null) return errorFlux;
-
         if (StringUtils.isEmpty(param.getModelId())) {
             param.setModelId(param.isOpenReasoning()
                     ? ModelEnum.DEEPSEEK_R1.getName()
                     : ModelEnum.DEEPSEEK_V3.getName());
         }
 
-        String userId = String.valueOf(UserContextHolder.getUserId());
-        Prompt prompt = buildPrompt(param, userId);
-        String chatId = param.getChatId();
-        String modelId = param.getModelId();
-        Long respMsgId = IdUtil.getSnowflakeNextId();
-        log.info("Stream chat prompt: {}", JSON.toJSONString(prompt));
-        return chatClient.prompt(prompt)
-                .system(s -> s.param(ChatConstant.CURRENT_TIME, DateUtil.getCurrentDateTime()))
-                .stream()
-                .chatResponse()
-                .flatMapSequential(r -> handleFluxResponse(r, userId, chatId, respMsgId, modelId))
-                // 异常处理后, 也增加结束标识
-                .onErrorResume(e -> {
-                    log.error("failed to streamChat.", e);
-                    TempMessage errorMessage = TempMessage.builder()
-                            .errorMsg(e.getMessage())
-                            .finished(true)
-                            .build();
-                    return Flux.just(errorMessage);
-                });
+        try {
+            String userId = String.valueOf(UserContextHolder.getUserId());
+            Prompt prompt = buildPrompt(param, userId);
+            String chatId = param.getChatId();
+            String modelId = param.getModelId();
+            Long respMsgId = IdUtil.getSnowflakeNextId();
+            log.info("Stream chat prompt: {}", JSON.toJSONString(prompt));
+            return chatClient.prompt(prompt)
+                    .system(s -> s.param(ChatConstant.CURRENT_TIME, DateUtil.getCurrentDateTime()))
+                    .stream()
+                    .chatResponse()
+                    .flatMapSequential(r -> handleFluxResponse(r, userId, chatId, respMsgId, modelId));
+        } catch (Exception e) {
+            log.error("failed to streamChat.", e);
+            TempMessage errorMessage = TempMessage.builder()
+                    .errorMsg(e.getMessage())
+                    .finished(true)
+                    .build();
+            return Flux.just(errorMessage);
+        }
     }
 
     private Prompt buildPrompt(StreamChatParam param, String userId) {
@@ -216,7 +211,8 @@ public class ChatServiceImpl implements ChatService {
 
         // 历史对话
         List<Message> messages = new ArrayList<>();
-        List<ChatMessageVo> lastMessageList = messageServiceImpl.queryLastMessageList(chatId, CONTEXT_COUNT * 2 + 1);
+        List<ChatMessageVo> lastMessageList = messageServiceImpl
+                .queryLastMessageList(chatId, ChatConstant.CONTEXT_COUNT * 2 + 1);
         if (CollectionUtils.isNotEmpty(lastMessageList)) {
             lastMessageList.sort(Comparator.comparing(ChatMessageVo::getCreateTime));
             lastMessageList.forEach(m -> {
@@ -236,12 +232,12 @@ public class ChatServiceImpl implements ChatService {
 
     private Flux<TempMessage> handleFluxResponse(ChatResponse resp, String userId,
                                                  String chatId, Long respMsgId, String modelId) {
-        log.info("response: {}", JSON.toJSONString(resp));
+        log.debug("response: {}", JSON.toJSONString(resp));
         AssistantMessage output = resp.getResult().getOutput();
         String rawMsgId = String.valueOf(output.getMetadata().get("id"));
-        boolean finished = Objects.equals(FINISH_MSG, resp.getResult().getMetadata().getFinishReason());
+        boolean finished = Objects.equals(ChatConstant.FINISH_MSG, resp.getResult().getMetadata().getFinishReason());
 
-        if (!finished ) {
+        if (!finished) {
             // 缓存消息
             // 思考消息
             String reasoningContent = String.valueOf(output.getMetadata().get("reasoningContent"));
@@ -317,7 +313,6 @@ public class ChatServiceImpl implements ChatService {
         }
         return null;
     }
-
 
 
 }

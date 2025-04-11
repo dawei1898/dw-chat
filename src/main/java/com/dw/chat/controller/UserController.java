@@ -4,6 +4,7 @@ import com.dw.chat.common.constant.ResultMsg;
 import com.dw.chat.common.entity.Response;
 import com.dw.chat.common.utils.UserContextHolder;
 import com.dw.chat.components.auth.Auth;
+import com.dw.chat.components.log.Log;
 import com.dw.chat.model.param.LoginParam;
 import com.dw.chat.model.param.RegisterParam;
 import com.dw.chat.model.vo.UserVo;
@@ -28,6 +29,7 @@ public class UserController {
     /**
      * 注册用户
      */
+    @Log
     @PostMapping("/register")
     public Response<Void> register(@RequestBody @Validated RegisterParam param){
         userServiceImpl.register(param);
@@ -37,6 +39,7 @@ public class UserController {
     /**
      * 用户登录
      */
+    @Log
     @PostMapping("/login")
     public Response<String> login(@RequestBody @Validated LoginParam param){
         String token = userServiceImpl.login(param);
@@ -46,6 +49,7 @@ public class UserController {
     /**
      * 退出登录
      */
+    @Log
     @Auth
     @DeleteMapping("/logout")
     public Response<Void> logout(){
@@ -56,6 +60,7 @@ public class UserController {
     /**
      * 查询用户信息
      */
+    @Log
     @Auth
     @GetMapping("/queryUser")
     public Response<UserVo> queryUser(){

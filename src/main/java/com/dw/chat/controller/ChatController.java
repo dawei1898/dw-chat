@@ -4,6 +4,7 @@ import com.dw.chat.common.constant.ResultMsg;
 import com.dw.chat.common.entity.PageResult;
 import com.dw.chat.common.entity.Response;
 import com.dw.chat.components.auth.Auth;
+import com.dw.chat.components.log.Log;
 import com.dw.chat.model.param.ChatParam;
 import com.dw.chat.model.param.MessageParam;
 import com.dw.chat.model.param.StreamChatParam;
@@ -36,6 +37,7 @@ public class ChatController {
     /**
      * 保存聊天会话
      */
+    @Log
     @Auth
     @PostMapping("/saveChat")
     public Response<String> saveChat(@RequestBody ChatParam param){
@@ -46,6 +48,7 @@ public class ChatController {
     /**
      * 删除聊天会话
      */
+    @Log
     @Auth
     @DeleteMapping("/deleteChat/{chatId}")
     public Response<Void> deleteChat(@PathVariable(name = "chatId")  String chatId){
@@ -57,6 +60,7 @@ public class ChatController {
     /**
      * 分页查询聊天会话
      */
+    @Log
     @Auth
     @PostMapping("/queryChatPage")
     public Response<PageResult<ChatRecordVo>> queryChatPage(@RequestBody ChatParam param){
@@ -67,6 +71,7 @@ public class ChatController {
     /**
      * 查询聊天消息列表
      */
+    @Log
     @Auth
     @GetMapping("/queryMessageList/{chatId}")
     public Response<List<ChatMessageVo>> queryMessageList(@PathVariable(name = "chatId") String chatId){
@@ -77,6 +82,7 @@ public class ChatController {
     /**
      * 保存提问消息
      */
+    @Log
     @Auth
     @PostMapping("/addMessage")
     public Response<String> addMessage(@RequestBody @Validated MessageParam param){

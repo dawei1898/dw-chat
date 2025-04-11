@@ -43,7 +43,7 @@ CREATE TABLE `dwc_chat_message` (
   `role` varchar(32) DEFAULT NULL COMMENT '角色（user-用户，assistant-AI助手）\n',
   `content_type` varchar(16) DEFAULT NULL COMMENT '消息内容格式（text-文本，image-图像）',
   `content` text NOT NULL COMMENT '消息内容',
-	`reasoning_content` text NOT NULL COMMENT '思考内容',
+  `reasoning_content` text DEFAULT NULL COMMENT '思考内容',
   `tokens` int(20) DEFAULT NULL COMMENT '消耗token数',
   `model_group` varchar(32) DEFAULT NULL COMMENT '模型厂商',
   `model_id` varchar(128) DEFAULT NULL COMMENT '模型ID',
