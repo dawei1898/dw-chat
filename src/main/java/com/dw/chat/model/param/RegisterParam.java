@@ -11,7 +11,7 @@ import java.io.Serializable;
 /**
  * 注册用户入参
  *
- * @author muye
+ * @author dawei
  */
 @Data
 public class RegisterParam implements Serializable {

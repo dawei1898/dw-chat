@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author dawei
  */
-//@CrossOrigin
+@CrossOrigin
 @RestController
 @RequestMapping("/chat")
 public class ChatController {

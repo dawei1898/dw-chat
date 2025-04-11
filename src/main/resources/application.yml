@@ -6,9 +6,9 @@ spring:
     name: dw-chat-app
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: your_mysql_url
-    username: your_mysql_username
-    password: your_mysql_password
+    url: your_mysql_url  # 替换为你的 MySQL url
+    username: your_mysql_username  # 替换为你的 MySQL 用户名
+    password: your_mysql_password  # 替换为你的 MySQL 密码
     druid:
       initial-size: 1
       min-idle: 1
@@ -19,7 +19,7 @@ spring:
       pool-prepared-statements: true
   ai:
     dashscope:
-      api-key: your_api_key
+      api-key: your_api_key # 替换为你的 阿里云百炼 API key （https://bailian.console.aliyun.com/）
       chat:
         options:
           model: 'qwen-max'
