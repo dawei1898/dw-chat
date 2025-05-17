@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.dw.chat.common.constant.ChatConstant;
 import com.dw.chat.common.entity.PageResult;
 import com.dw.chat.common.enums.ContentTypeEnum;
-import com.dw.chat.common.enums.ModelEnum;
 import com.dw.chat.common.enums.MsgRoleEnum;
 import com.dw.chat.common.enums.MsgTypeEnum;
 import com.dw.chat.common.utils.AddressUtil;
@@ -35,6 +34,8 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.deepseek.DeepSeekAssistantMessage;
+import org.springframework.ai.deepseek.api.DeepSeekApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -165,8 +166,8 @@ public class ChatServiceImpl implements ChatService {
         if (errorFlux != null) return errorFlux;
         if (StringUtils.isEmpty(param.getModelId())) {
             param.setModelId(param.isOpenReasoning()
-                    ? ModelEnum.DEEPSEEK_R1.getName()
-                    : ModelEnum.DEEPSEEK_V3.getName());
+                    ? DeepSeekApi.ChatModel.DEEPSEEK_REASONER.getValue()
+                    : DeepSeekApi.ChatModel.DEEPSEEK_CHAT.getValue());
         }
 
         try {
@@ -232,27 +233,28 @@ public class ChatServiceImpl implements ChatService {
 
     private Flux<TempMessage> handleFluxResponse(ChatResponse resp, String userId,
                                                  String chatId, Long respMsgId, String modelId) {
-        log.debug("response: {}", JSON.toJSONString(resp));
-        AssistantMessage output = resp.getResult().getOutput();
-        String rawMsgId = String.valueOf(output.getMetadata().get("id"));
+        log.info("response: {}", JSON.toJSONString(resp));
+        DeepSeekAssistantMessage deepSeekAssistantMessage = (DeepSeekAssistantMessage) resp.getResult().getOutput();
+
+        String rawMsgId = String.valueOf(deepSeekAssistantMessage.getMetadata().get("id"));
         boolean finished = Objects.equals(ChatConstant.FINISH_MSG, resp.getResult().getMetadata().getFinishReason());
 
         if (!finished) {
             // 缓存消息
             // 思考消息
-            String reasoningContent = String.valueOf(output.getMetadata().get("reasoningContent"));
+            String reasoningContent = deepSeekAssistantMessage.getReasoningContent();
             if (StringUtils.isNotEmpty(reasoningContent)) {
                 TempMessage tempMessage = MESSAGE_CACHE.computeIfAbsent(respMsgId, k -> new TempMessage());
                 tempMessage.setRawMsgId(rawMsgId);
                 tempMessage.getReasoningContentBuilder().append(reasoningContent);
-                tempMessage.setRole(output.getMessageType().name().toLowerCase());
+                tempMessage.setRole(deepSeekAssistantMessage.getMessageType().name().toLowerCase());
             }
             // 回答消息
-            if (StringUtils.isNotEmpty(output.getText())) {
+            if (StringUtils.isNotEmpty(deepSeekAssistantMessage.getText())) {
                 TempMessage tempMessage = MESSAGE_CACHE.computeIfAbsent(respMsgId, k -> new TempMessage());
                 tempMessage.setRawMsgId(rawMsgId);
-                tempMessage.getContentBuilder().append(output.getText());
-                tempMessage.setRole(output.getMessageType().name().toLowerCase());
+                tempMessage.getContentBuilder().append(deepSeekAssistantMessage.getText());
+                tempMessage.setRole(deepSeekAssistantMessage.getMessageType().name().toLowerCase());
             }
         } else {
             // 结束后保存消息
@@ -284,8 +286,8 @@ public class ChatServiceImpl implements ChatService {
         TempMessage respMessage = TempMessage.builder()
                 .msgId(respMsgId)
                 .chatId(chatId)
-                .content(output.getText())
-                .reasoningContent(String.valueOf(output.getMetadata().get("reasoningContent")))
+                .content(deepSeekAssistantMessage.getText())
+                .reasoningContent(deepSeekAssistantMessage.getReasoningContent())
                 .type(MsgTypeEnum.AI.getCode())
                 .modelId(modelId)
                 .finished(finished)

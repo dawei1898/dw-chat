@@ -28,7 +28,7 @@ public class ChatClientConfig {
 
         // 日志记录
         SimpleLoggerAdvisor customLoggerAdvisor = new SimpleLoggerAdvisor(
-                request -> "[chat request]: " + request.userText(),
+                request -> "[chat request]: " + request.prompt(),
                 response -> "[chat response]: " + response.getResult(),
                 0
         );

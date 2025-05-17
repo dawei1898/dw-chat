@@ -18,11 +18,11 @@ spring:
       time-between-eviction-runs-millis: 60000
       pool-prepared-statements: true
   ai:
-    dashscope:
-      api-key: your_api_key # 替换为你的 阿里云百炼 API key （https://bailian.console.aliyun.com/）
+    deepseek:
+      api-key: your_api_key # 替换为你的 DeepSeek API key （https://platform.deepseek.com/）
       chat:
         options:
-          model: 'qwen-max'
+          model: 'deepseek-chat'
 
 # mybatis-plus
 mybatis-plus:
