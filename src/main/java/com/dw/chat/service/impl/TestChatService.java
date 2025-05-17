@@ -75,7 +75,7 @@ public class TestChatService {
                 .chatResponse()
                 .flatMapSequential
                         (r -> {
-                            log.info("response: {}", JSON.toJSONString(r));
+                            log.debug("response: {}", JSON.toJSONString(r));
                             DeepSeekAssistantMessage deepSeekAssistantMessage = (DeepSeekAssistantMessage) r.getResult().getOutput();
 
                             Map<String, String> map = new HashMap<>();

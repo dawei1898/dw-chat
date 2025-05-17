@@ -233,7 +233,7 @@ public class ChatServiceImpl implements ChatService {
 
     private Flux<TempMessage> handleFluxResponse(ChatResponse resp, String userId,
                                                  String chatId, Long respMsgId, String modelId) {
-        log.info("response: {}", JSON.toJSONString(resp));
+        log.debug("response: {}", JSON.toJSONString(resp));
         DeepSeekAssistantMessage deepSeekAssistantMessage = (DeepSeekAssistantMessage) resp.getResult().getOutput();
 
         String rawMsgId = String.valueOf(deepSeekAssistantMessage.getMetadata().get("id"));
