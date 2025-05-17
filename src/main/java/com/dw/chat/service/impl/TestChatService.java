@@ -10,6 +10,7 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.deepseek.DeepSeekAssistantMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -74,18 +75,18 @@ public class TestChatService {
                 .chatResponse()
                 .flatMapSequential
                         (r -> {
-                            //log.info("response: {}", JSON.toJSONString(r));
+                            log.info("response: {}", JSON.toJSONString(r));
+                            DeepSeekAssistantMessage deepSeekAssistantMessage = (DeepSeekAssistantMessage) r.getResult().getOutput();
 
                             Map<String, String> map = new HashMap<>();
                             // 思考
-                            String reasoningContent = String.valueOf(r.getResult()
-                                    .getOutput().getMetadata().get("reasoningContent"));
+                            String reasoningContent = deepSeekAssistantMessage.getReasoningContent();
                             if (StringUtils.isNotEmpty(reasoningContent)) {
                                 map.put("reasoningContent", reasoningContent);
                             }
 
                             // 回答
-                            String text = r.getResult().getOutput().getText();
+                            String text = deepSeekAssistantMessage.getText();
                             if (StringUtils.isNotEmpty(text)) {
                                 map.put("content", text);
                             }
