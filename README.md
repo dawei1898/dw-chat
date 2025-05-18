@@ -21,8 +21,8 @@ Dw Chat 是一个接入 DeepSeek 大模型的极简 AI 对话系统，旨在为�
 | 工程名称 | 描述            | GitHub 地址 |
 | --- |---------------| --- |
 | dw-chat-web-lite | 纯前端版工程        | https://github.com/dawei1898/dw-chat-web-lite |
-| dw-chat-web | 前端工程          | https://github.com/dawei1898/dw-chat-web |
-| dw-chat | java 后端工程     | https://github.com/dawei1898/dw-chat |
+| dw-chat-web | Next.js 前端工程  | https://github.com/dawei1898/dw-chat-web |
+| dw-chat | Java 后端工程     | https://github.com/dawei1898/dw-chat |
 | dw-chat-next | Next.js 全栈版工程 | https://github.com/dawei1898/dw-chat-next|
 | dw-chat-nest | NestJS 后端工程   | https://github.com/dawei1898/dw-chat-nest |
 
