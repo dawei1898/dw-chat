@@ -10,11 +10,9 @@ Dw Chat 是一个接入 DeepSeek 大模型的极简 AI 对话系统，旨在为�
 
 ## 主要技术栈
 
-1. **AI 集成**：DeepSeek LLM
-2. **后端框架**：Java 21 + Spring Boot 3.4
-3. **数据访问**：MyBatis Plus
-4. **数据库**：MySQL
-5. **其他工具**：spring-ai-deepseek（用于集成 DeepSeek）
+1. **AI 模型**：DeepSeek LLM
+2. **后端框架**：Java 21 + Spring Boot 3.4 + spring-ai-deepseek
+3. **数据库**：MySQL + MyBatis Plus
 
 ## 项目系列生态
 
